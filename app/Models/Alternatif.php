@@ -24,4 +24,9 @@ class Alternatif extends Model
     public function setNamaAttribute($value) {
         $this->attributes['nama'] = strtolower($value);
     }
+
+    public function alternatifKriterias()
+    {
+        return $this->hasMany('App\Models\AlternatifKriteria');
+    }
 }

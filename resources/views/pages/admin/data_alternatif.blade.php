@@ -53,7 +53,7 @@
         </button>
         <h4 class="modal-title" id="myModalLabel">Edit Alternatif</h4>
       </div>
-      <div class="modal-body">
+      <div id="modal-body-edit" class="modal-body">
         <form id="editAlternatif" class="form-horizontal form-label-left">
           @csrf
           @method('PUT')
@@ -63,6 +63,19 @@
               <input name="nama" type="text" id="nama" required="required" class="form-control col-md-7 col-xs-12" placeholder="Nama Alternatif">
             </div>
           </div>
+          @foreach ($kriterias as $kriteria)
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="{{ $kriteria->id }}">{{ ucfirst($kriteria->nama) }}</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <select name="{{ $kriteria->id }}" id="{{ $kriteria->id }}" required class="form-control">
+                  <option value="" id="default" selected disabled>Pilih</option>
+                  @foreach ($kriteria->subKriterias as $sub_kriteria)
+                  <option value="{{ $sub_kriteria->nilai }}">{{ $sub_kriteria->nama !== null ? $sub_kriteria->nama : $sub_kriteria->keterangan }}</option>
+                @endforeach
+              </select>
+            </div>
+          </div>
+          @endforeach
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Kembali</button>
@@ -91,7 +104,19 @@
               <input name="nama" type="text" id="nama" required="required" class="form-control col-md-7 col-xs-12" placeholder="Nama Alternatif">
             </div>
           </div>
-
+          @foreach ($kriterias as $kriteria)
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="{{ $kriteria->id }}">{{ ucfirst($kriteria->nama) }}</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <select name="{{ $kriteria->id }}" id="{{ $kriteria->id }}" required class="form-control">
+                  <option value="" selected disabled>Pilih</option>
+                @foreach ($kriteria->subKriterias as $sub_kriteria)
+                  <option value="{{ $sub_kriteria->nilai }}">{{ $sub_kriteria->nama !== null ? $sub_kriteria->nama : $sub_kriteria->keterangan }}</option>
+                @endforeach
+              </select>
+            </div>
+          </div>
+          @endforeach
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Kembali</button>
@@ -114,6 +139,10 @@
     {{-- <script type="text/javascript" src="{{ asset('template/bootstrap-daterangepicker/daterangepicker.js') }}"></script> --}}
     <script>
       $(document).ready(function() {
+        $('#modal-edit').on('hidden.bs.modal', function () {
+          $('#editAlternatif').trigger("reset");
+          $('#editAlternatif option[selected="selected"]').removeAttr('selected')
+        })
         $('.date').datepicker({});
 
         let dataKriteria = $('#data-alternatif').DataTable({
@@ -137,9 +166,14 @@
           let id = $(this).data("id")
           
           $.get("{{ url('/api/alternatif') }}" +'/' + id, function (response) {
+            console.log(response)
               $('#modal-edit').modal('toggle')
               $('#editAlternatif').data("id",id)
               $('#editAlternatif input[name="nama"]').val(response.data.nama)
+              response.data.alternatif_kriterias.forEach(alternatif_kriteria => {
+                $('#editAlternatif select[id="'+alternatif_kriteria.kriteria_id+'"] option[value="'+alternatif_kriteria.nilai+'"]').attr("selected","selected")
+              });
+              
           })
       })
 
@@ -159,6 +193,7 @@
               }
             },
             success: function(response){
+              console.log(response)
                 $('#data-alternatif').DataTable().ajax.reload();
                 $('#modal-add').modal('toggle');
                 $('#addAlternatif').trigger("reset");

@@ -30,7 +30,7 @@
                 <tr>
                   <th>No</th>
                   <th>Nama</th>
-                  <th>Bobot</th>
+                  {{-- <th>Bobot</th> --}}
                   <th>Keterangan</th>
                   <th>Aksi</th>
                 </tr>
@@ -66,7 +66,7 @@
                 <input name="nama" type="text" id="nama" required="required" class="form-control col-md-7 col-xs-12" placeholder="Nama Kriteria">
               </div>
             </div>
-            <div class="form-group">
+            {{-- <div class="form-group">
               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Kepentingan<span class="required"></span>
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
@@ -79,7 +79,7 @@
                   <option value="5" id="bobot_5">Sangat Penting</option>
                 </select>
               </div>
-            </div>
+            </div> --}}
             <div class="form-group">
               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Jenis<span class="required"></span>
               </label>
@@ -132,7 +132,7 @@
                 <input name="nama" type="text" id="nama" required="required" class="form-control col-md-7 col-xs-12" placeholder="Nama Kriteria">
               </div>
             </div>
-            <div class="form-group">
+            {{-- <div class="form-group">
               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Kepentingan <span class="required">*</span>
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
@@ -145,7 +145,7 @@
                   <option value="5">Sangat Penting</option>
                 </select>
               </div>
-            </div>
+            </div> --}}
             <div class="form-group">
               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="benefit">Benefit/Cost <span class="required">*</span>
               </label>
@@ -209,7 +209,7 @@
           columns: [
               {data: 'DT_RowIndex', name: 'DT_RowIndex'},
               {data: 'nama', name: 'nama'},
-              {data: 'ternormalisasi', name: 'ternormalisasi'},
+              // {data: 'ternormalisasi', name: 'ternormalisasi'},
               {data: 'keterangan', name: 'keterangan'},
               {
                   data: 'action', 
@@ -228,7 +228,7 @@
               $('#modal-edit').modal('toggle')
               $('#editKriteria').data("id",id)
               $('#editKriteria input[name="nama"]').val(response.data.nama)
-              $('#editKriteria option[id="bobot_'+response.data.bobot+'"]').attr('selected','selected');
+              // $('#editKriteria option[id="bobot_'+response.data.bobot+'"]').attr('selected','selected');
               $('#editKriteria option[id="keterangan_'+response.data.benefit+'"]').attr('selected','selected');
 
             response.data.sub_kriterias.forEach(subkriteria => {

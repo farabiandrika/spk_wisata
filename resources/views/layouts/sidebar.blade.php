@@ -25,7 +25,8 @@
 
             @if (auth()->user()->role == 'user')
             <li class="@yield('biodata-nav')"><a href="/biodata"><i class="fa fa-user"></i>Biodata</a></li>
-            <li class="@yield('wisata-nav')"><a href="/wisata"><i class="fa fa-globe"></i>Tempat Wisata</a></li>
+            <li class="@yield('perhitungan-nav')"><a href="/perhitungan"><i class="fa fa-globe"></i>Perhitungan</a></li>
+            {{-- <li class="@yield('wisata-nav')"><a href="/wisata"><i class="fa fa-globe"></i>Tempat Wisata</a></li> --}}
             @endif
     
           </ul>

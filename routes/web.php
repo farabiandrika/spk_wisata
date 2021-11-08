@@ -26,7 +26,8 @@ Route::group(['middleware' => 'prevent-back-history'],function(){
      
         Route::middleware(['isUser'])->group(function () {
             Route::get('/biodata', [PagesController::class, 'biodata']);
-            Route::get('/wisata', [PagesController::class, 'wisata']);
+            Route::get('/perhitungan', [PagesController::class, 'perhitungan']);
+            // Route::get('/wisata', [PagesController::class, 'wisata']);
         });
      
         Route::get('/logout', function() {

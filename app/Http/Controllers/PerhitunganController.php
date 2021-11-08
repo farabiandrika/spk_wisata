@@ -13,15 +13,21 @@ class PerhitunganController extends Controller
     public function hitung(Request $request) {
         try {
             // Mengambil data Alternatif dan Kriteria
-            $alternatifs = Alternatif::all();
+            $alternatifs = Alternatif::with('alternatifKriterias')->get();;
             $kriterias = Kriteria::all();
+
+            foreach ($kriterias as $key => $kriteria) {
+                $kriteria->bobot = floatval($request[$kriteria->id]);
+            }
 
             // Konversi Bentuk Inputan sehingga menjadi group
             $data = [];
-            foreach ($alternatifs as $keyEks => $alternatif) {
-                foreach ($kriterias as $keyKrit => $kriteria) {
-                    $data[$keyEks][$keyKrit] = $request[$alternatif->id.'_pilihan_'.$kriteria->id];
+            foreach ($alternatifs as $keyAlt => $alternatif) {
+                $temp = [];
+                foreach ($alternatif->alternatifKriterias as $keyAltKrit => $alternatif_kriteria) {
+                    $temp[$keyAltKrit] = floatval($alternatif_kriteria->nilai);
                 }
+                $data[$keyAlt] = $temp;
             }
 
             // Normalisasi Kriteria
@@ -47,8 +53,6 @@ class PerhitunganController extends Controller
                 }
                 $count_result[$i] = $temp;
             }
-
-            // return response()->json($countSAW, Response::HTTP_OK);
 
             // Penggabungan
             $result = collect();

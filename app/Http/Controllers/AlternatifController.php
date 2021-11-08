@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alternatif;
+use App\Models\AlternatifKriteria;
+use App\Models\Kriteria;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -73,6 +75,16 @@ class AlternatifController extends Controller
                 'message' => 'Alternatif Created',
                 'data' => $alternatif
             ];
+
+            $kriterias = Kriteria::all();
+
+            foreach ($kriterias as $key => $kriteria) {
+                AlternatifKriteria::create([
+                    'kriteria_id' => $kriteria->id,
+                    'alternatif_id' => $alternatif->id,
+                    'nilai' => $request[$kriteria->id],
+                ]);
+            }
             
             return response()->json($response, Response::HTTP_OK);
         } catch (QueryException $e) {
@@ -88,9 +100,11 @@ class AlternatifController extends Controller
      * @param  \App\Models\Alternatif  $alternatif
      * @return \Illuminate\Http\Response
      */
-    public function show(Alternatif $alternatif)
+    public function show($id)
     {
         try {
+            $alternatif = Alternatif::where('id', $id)->with('alternatifKriterias')->first();
+
             $response = [
                 'message' => 'Alternatif Obtained',
                 'data' => $alternatif
@@ -135,6 +149,18 @@ class AlternatifController extends Controller
                     'message' => 'Failed To Update',
                     'data' => $validator->errors(),
                 ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+            AlternatifKriteria::where('alternatif_id', $alternatif->id)->delete();
+            
+            $kriterias = Kriteria::all();
+
+            foreach ($kriterias as $key => $kriteria) {
+                AlternatifKriteria::create([
+                    'kriteria_id' => $kriteria->id,
+                    'alternatif_id' => $alternatif->id,
+                    'nilai' => $request[$kriteria->id],
+                ]);
             }
     
             $alternatif = $alternatif->update($validator->validated());

@@ -61,7 +61,7 @@ class KriteriaController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'nama' => 'required|string|max:255',
-                'bobot' => 'required',
+                // 'bobot' => 'required',
                 'benefit' => 'required',
             ]);
     
@@ -88,7 +88,7 @@ class KriteriaController extends Controller
 
             $kriteria = Kriteria::create($validator->validated());
 
-            self::generateKriteria();
+            // self::generateKriteria();
 
             for ($i=0; $i < count($request->nama_sub_kriteria); $i++) { 
                 $sub = [
@@ -102,7 +102,7 @@ class KriteriaController extends Controller
             }
 
             $response = [
-                'message' => 'Kriteria Created Created',
+                'message' => 'Kriteria Created',
                 'data' => $kriteria
             ];
 
@@ -159,7 +159,7 @@ class KriteriaController extends Controller
         try {
             $rules = [
                 'nama' => 'required|string|max:255',
-                'bobot' => 'required',
+                // 'bobot' => 'required',
                 'benefit' => 'required',
             ];
 
@@ -188,7 +188,7 @@ class KriteriaController extends Controller
     
             $kriteria = Kriteria::find($id)->update($validator->validated());
     
-            self::generateKriteria();
+            // self::generateKriteria();
 
             SubKriteria::where('kriteria_id', $id)->delete();
 

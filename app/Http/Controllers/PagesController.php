@@ -24,11 +24,17 @@ class PagesController extends Controller
     }
 
     public function dataAlternatif() {
-        return view('pages.admin.data_alternatif');
+        $kriterias = Kriteria::with('subKriterias')->get();
+        return view('pages.admin.data_alternatif', compact('kriterias'));
     }
 
     public function biodata() {
         return view('pages.user.biodata');
+    }
+
+    public function perhitungan() {
+        $kriterias = Kriteria::all();
+        return view('pages.user.perhitungan', compact('kriterias'));
     }
 
     public function wisata() {
