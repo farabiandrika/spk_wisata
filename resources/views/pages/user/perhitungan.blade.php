@@ -26,7 +26,12 @@
                 @foreach ($kriterias as $kriteria)
                 <div class="form-group">
                     <label for="{{ $kriteria->id }}">{{ $kriteria->nama }}</label>
-                    <input type="text" required id="{{ $kriteria->id }}" name="{{ $kriteria->id }}" class="form-control decimalOnly" placeholder="{{ $kriteria->nama }}">
+                    <select class="form-control" name="{{ $kriteria->id }}" id="{{ $kriteria->id }}">
+                      @foreach ($kriteria->subKriterias as $sub_kriteria)
+                      <option value="{{ $sub_kriteria->nilai }}">{{ $sub_kriteria->nama !== null ? $sub_kriteria->nama : $sub_kriteria->keterangan }}</option>
+                      @endforeach
+                    </select>
+                    {{-- <input type="text" required id="{{ $kriteria->id }}" name="{{ $kriteria->id }}" class="form-control decimalOnly" placeholder="{{ $kriteria->nama }}"> --}}
                 </div>
                 @endforeach
                   <div class="form-group">

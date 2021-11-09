@@ -33,7 +33,7 @@ class PagesController extends Controller
     }
 
     public function perhitungan() {
-        $kriterias = Kriteria::all();
+        $kriterias = Kriteria::with('subKriterias')->get();
         return view('pages.user.perhitungan', compact('kriterias'));
     }
 
