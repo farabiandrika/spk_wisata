@@ -11,6 +11,12 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class PagesController extends Controller
 {
+    public function landing() {
+        $wisatas = Alternatif::all();
+
+        return view('pages.landing', compact('wisatas'));
+    }
+
     public function home() {
         return view('pages.home');
     }

@@ -11,7 +11,8 @@
         <div class="menu_section">
           <h3></h3>
           <ul class="nav side-menu">
-            <li class="@yield('home-nav')"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+            <li class=""><a href="/"><i class="fa fa-home"></i>Home</a></li>
+            <li class="@yield('home-nav')"><a href="/home"><i class="fa fa-home"></i>Dashboard</a></li>
     
             @if (auth()->user()->role == 'admin')
             <li class="@yield('data-master-nav')"><a><i class="fa fa-table"></i>Data Master<span class="fa fa-chevron-down"></span></a>

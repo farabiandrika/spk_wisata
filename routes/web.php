@@ -35,8 +35,10 @@ Route::group(['middleware' => 'prevent-back-history'],function(){
             return redirect('/login');
         });
 
-        Route::get('/', [PagesController::class, 'home']);
+        Route::get('/home', [PagesController::class, 'home']);
+
     });
+    Route::get('/', [PagesController::class, 'landing']);
 
 	Auth::routes([
         'register' => true, // Registration Routes...
