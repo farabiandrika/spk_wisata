@@ -71,7 +71,7 @@ class AlternatifController extends Controller
             }
 
             $imageName = Str::slug($request->nama).'_'.time().'.'.$request->gambar->extension();  
-            $request->gambar->move(public_path('upload/images'), $imageName);
+            $request->gambar->move('upload/images', $imageName);
 
             $alternatif = Alternatif::create(array_merge($validator->validated(), ['gambar' => $imageName]));
 
@@ -215,10 +215,10 @@ class AlternatifController extends Controller
             }
     
             if ($request->gambar) {
-                unlink(public_path('upload/images/'.$alternatif->gambar));
+                unlink('upload/images/'.$alternatif->gambar);
 
                 $imageName = Str::slug($request->nama).'_'.time().'.'.$request->gambar->extension();  
-                $request->gambar->move(public_path('upload/images'), $imageName);
+                $request->gambar->move('upload/images', $imageName);
                 $alternatif->update(['gambar' => $imageName]);
             }
 
@@ -246,7 +246,7 @@ class AlternatifController extends Controller
     public function destroy(Alternatif $alternatif)
     {
         try {
-            unlink(public_path('upload/images/'.$alternatif->gambar));
+            unlink('upload/images/'.$alternatif->gambar);
 
             $alternatif->delete();
 
