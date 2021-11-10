@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class AlternatifController extends Controller
 {
@@ -69,7 +70,10 @@ class AlternatifController extends Controller
                 ], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
-            $alternatif = Alternatif::create($validator->validated());
+            $imageName = Str::slug($request->nama).'_'.time().'.'.$request->gambar->extension();  
+            $request->gambar->move(public_path('upload/images'), $imageName);
+
+            $alternatif = Alternatif::create(array_merge($validator->validated(), ['gambar' => $imageName]));
 
             $response = [
                 'message' => 'Alternatif Created',
@@ -104,10 +108,12 @@ class AlternatifController extends Controller
     {
         try {
             $alternatif = Alternatif::where('id', $id)->with('alternatifKriterias')->first();
+            $kriterias = Kriteria::with('subKriterias')->get();
 
             $response = [
                 'message' => 'Alternatif Obtained',
-                'data' => $alternatif
+                'data' => $alternatif,
+                'kriterias' => $kriterias,
             ];
             return response()->json($response, Response::HTTP_OK);
         } catch (QueryException $e) {
@@ -177,6 +183,59 @@ class AlternatifController extends Controller
             ]);
         }
     }
+    
+    public function updateV2(Request $request, $id)
+    {
+        try {
+            $rules = [
+                'nama' => 'required|string|max:255',
+            ];
+
+            $alternatif = Alternatif::findOrFail($id);
+
+            $validator = Validator::make($request->all(), $rules);
+    
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Failed To Update',
+                    'data' => $validator->errors(),
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+            AlternatifKriteria::where('alternatif_id', $alternatif->id)->delete();
+            
+            $kriterias = Kriteria::all();
+
+            foreach ($kriterias as $key => $kriteria) {
+                AlternatifKriteria::create([
+                    'kriteria_id' => $kriteria->id,
+                    'alternatif_id' => $alternatif->id,
+                    'nilai' => $request[$kriteria->id],
+                ]);
+            }
+    
+            if ($request->gambar) {
+                unlink(public_path('upload/images/'.$alternatif->gambar));
+
+                $imageName = Str::slug($request->nama).'_'.time().'.'.$request->gambar->extension();  
+                $request->gambar->move(public_path('upload/images'), $imageName);
+                $alternatif->update(['gambar' => $imageName]);
+            }
+
+            $alternatif = $alternatif->update($validator->validated());
+    
+            $response = [
+                'message' => 'Alternatif Updated',
+                'data' => $alternatif
+            ];
+            
+            return response()->json($response, Response::HTTP_OK);
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => 'Failed '.$e,
+            ]);
+        }
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -187,6 +246,8 @@ class AlternatifController extends Controller
     public function destroy(Alternatif $alternatif)
     {
         try {
+            unlink(public_path('upload/images/'.$alternatif->gambar));
+
             $alternatif->delete();
 
             $response = [

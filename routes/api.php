@@ -23,6 +23,7 @@ Route::resource('user', UserController::class)->except(['edit']);
 Route::resource('kriteria', KriteriaController::class)->except(['edit']);
 Route::get('getUserEkskul', [EkstrakulikulerController::class, 'getUserEkskul'])->name('getUserEkskul');
 Route::get('ekstrakulikuler/pilihEkskul/{ekstrakulikuler}/{id}', [EkstrakulikulerController::class, 'pilihEkskul'])->name('pilihEkskul');
+Route::POST('alternatif/{id}/update', [AlternatifController::class, 'updateV2']);
 Route::resource('alternatif', AlternatifController::class)->except(['edit']);
 Route::resource('biodata', BiodataController::class)->except(['edit']);
 Route::post('hitung', [PerhitunganController::class, 'hitung'])->name('hitung');

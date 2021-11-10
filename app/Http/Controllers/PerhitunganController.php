@@ -60,6 +60,7 @@ class PerhitunganController extends Controller
                 $temp = [];
                 $temp['id'] = $alternatif->id;
                 $temp['nama'] = $alternatif->nama;
+                $temp['gambar'] = $alternatif->gambar;
                 $temp['hasil'] = round($count_result[$key],2);
                 $temp['perhitungan'] = $countSAW[$key];
                 $result->push($temp);

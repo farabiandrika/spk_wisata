@@ -23,7 +23,7 @@
           </div>
           <div class="x_content">
 
-            <button type="button" class="btn btn-md btn-primary" data-toggle="modal" data-target="#modal-add">Tambah Kriteria</button>
+            <button type="button" class="btn btn-md btn-primary" data-toggle="modal" data-target="#modal-add">Tambah Alternatif</button>
             <br /><br />
             <table id="data-alternatif" class="table table-striped table-responsive table-bordered">
               <thead>
@@ -56,26 +56,22 @@
       <div id="modal-body-edit" class="modal-body">
         <form id="editAlternatif" class="form-horizontal form-label-left">
           @csrf
-          @method('PUT')
+          @method('POST')
           <div class="form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="nama">Nama</label>
             <div class="col-md-6 col-sm-6 col-xs-12">
               <input name="nama" type="text" id="nama" required="required" class="form-control col-md-7 col-xs-12" placeholder="Nama Alternatif">
             </div>
           </div>
-          @foreach ($kriterias as $kriteria)
           <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="{{ $kriteria->id }}">{{ ucfirst($kriteria->nama) }}</label>
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="gambar">Gambar</label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-              <select name="{{ $kriteria->id }}" id="{{ $kriteria->id }}" required class="form-control">
-                  <option value="" id="default" selected disabled>Pilih</option>
-                  @foreach ($kriteria->subKriterias as $sub_kriteria)
-                  <option value="{{ $sub_kriteria->nilai }}">{{ $sub_kriteria->nama !== null ? $sub_kriteria->nama : $sub_kriteria->keterangan }}</option>
-                @endforeach
-              </select>
+              <input type="file" name="gambar" id="gambarEdit" accept="image/*" class="form-control">
             </div>
           </div>
-          @endforeach
+          <div id="kriteriaGroupEdit">
+            
+          </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Kembali</button>
@@ -102,6 +98,12 @@
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="nama">Nama</label>
             <div class="col-md-6 col-sm-6 col-xs-12">
               <input name="nama" type="text" id="nama" required="required" class="form-control col-md-7 col-xs-12" placeholder="Nama Alternatif">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="gambar">Gambar</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="file" name="gambar" id="gambar" required accept="image/*" class="form-control">
             </div>
           </div>
           @foreach ($kriterias as $kriteria)
@@ -170,23 +172,47 @@
               $('#modal-edit').modal('toggle')
               $('#editAlternatif').data("id",id)
               $('#editAlternatif input[name="nama"]').val(response.data.nama)
-              response.data.alternatif_kriterias.forEach(alternatif_kriteria => {
-                $('#editAlternatif select[id="'+alternatif_kriteria.kriteria_id+'"] option[value="'+alternatif_kriteria.nilai+'"]').attr("selected","selected")
-              });
+              // response.data.alternatif_kriterias.forEach(alternatif_kriteria => {
+              //   $('#editAlternatif select[id="'+alternatif_kriteria.kriteria_id+'"] option[value="'+alternatif_kriteria.nilai+'"]').attr("selected","selected")
+              // });
+
+              spawnKriteria(response.kriterias, response.data.alternatif_kriterias)
               
           })
       })
+
+      function spawnKriteria(kriterias, alternatif_kriterias) {
+        $('#kriteriaGroupEdit').html('')
+        kriterias.forEach(kriteria => {
+          let frmGroup = `<div class="form-group"><label class="control-label col-md-3 col-sm-3 col-xs-12" for="${kriteria.id}">${kriteria.nama}</label><div class="col-md-6 col-sm-6 col-xs-12"><select name="${kriteria.id}" id="select-${kriteria.id}" required class="form-control"></select></div></div>`
+
+          $('#kriteriaGroupEdit').append(frmGroup)
+
+          kriteria.sub_kriterias.forEach((sub_kriteria, index) => {
+            const findAlterntifKriterias = alternatif_kriterias.find(alternatif_kriteria => alternatif_kriteria.kriteria_id === kriteria.id);
+            // console.log(`${findAlterntifKriterias.nilai} dan ${findAlterntifKriterias.kriteria_id}`)
+            let optionElm = `<option value="${sub_kriteria.nilai}" ${findAlterntifKriterias.nilai === sub_kriteria.nilai ? 'selected' : ''}>${sub_kriteria.nama !== null ? sub_kriteria.nama : sub_kriteria.keterangan}</option>`
+              $(`#select-${kriteria.id}`).append(optionElm)
+            });
+        });
+      }
 
       // ADD KRITERIA
      $('#addAlternatif').submit(function(e) {
         e.preventDefault()
       
+        let frm = $('form#addAlternatif');
+        let formData = new FormData(frm[0]);
+        formData.append('file', $('input[type=file]')[0].files[0]);
+
         $.ajax({
             method: "POST",
             url: "{{route('alternatif.store')}}",
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            data: $(this).serialize(),
+            data: formData,
             dataType: 'JSON',
+            processData: false,
+            contentType: false,
             error: function(xhr, status, error) {
               for (variable in xhr.responseJSON.data) {
                 toastr.error(xhr.responseJSON.data[variable])
@@ -207,18 +233,26 @@
           e.preventDefault()
           let id = $(this).data('id')
   
+          let frm = $('form#editAlternatif');
+          let formData = new FormData(frm[0]);
+          if( document.getElementById("gambarEdit").files.length > 0 ){
+            formData.append('file', $('input[type=file]')[0].files[0]);
+          }
+
           $.ajax({
-              method: "PUT",
-              url: "{{ url('/api/alternatif') }}" + "/" + id,
-              data: $(this).serialize(),
+              method: "POST",
+              url: "{{ url('/api/alternatif') }}" + "/" + id + '/update',
+              headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+              data: formData,
               dataType: 'JSON',
+              processData: false,
+              contentType: false,
               error: function(xhr, status, error) {
                   for (variable in xhr.responseJSON.data) {
                       toastr.error(xhr.responseJSON.data[variable])
                   }
               },
               success: function(response){
-                console.log(response)
                   $('#data-alternatif').DataTable().ajax.reload();
                   $('#modal-edit').modal('toggle')
                   $('#editAlternatif').trigger("reset");

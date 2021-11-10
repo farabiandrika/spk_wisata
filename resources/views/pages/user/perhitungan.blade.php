@@ -40,12 +40,20 @@
               </form>
             </div>
             <div class="x_content step step2">
-              <h3>Kami Merekomendasikan :</h3>
-              <div id="select_wisata" style="margin-bottom: 50px">
-                {{-- <h4>2. Satu <button type="button" class="btn btn-xs btn-primary">Pilih</button></h4> --}}
+              <div class="row">
+                <div class="col-md-12">
+                  <h3>Kami Merekomendasikan :</h3>
+                </div>
               </div>
-              <button type="button" class="btn back btn-secondary">Back</button>
-              <a href="javascript:;" data-target="#hasil-perhitungan" data-toggle="modal" class="btn btn-primary">Lihat Hasil Perhitungan</a>
+              <div id="select_wisata" class="row text-center d-block" style="margin-bottom: 50px">
+                  {{-- <h4>2. Satu <button type="button" class="btn btn-xs btn-primary">Pilih</button></h4> --}}
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <button type="button" class="btn back btn-secondary">Back</button>
+                  <a href="javascript:;" data-target="#hasil-perhitungan" data-toggle="modal" class="btn btn-primary">Lihat Hasil Perhitungan</a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -124,8 +132,11 @@
               for (variable in response.data) {
                 let temp_dataSet = [];
                 temp_dataSet.push(response.data[variable].nama);
-                console.log(response.data[variable])                    
-                $('#select_wisata').append(`<h4>${+variable+1}. ${response.data[variable].nama} <span class="badge badge-info">${response.data[variable].hasil}</span></h4>`)
+
+                if (variable < 3) {
+                  let elm = `<div class="col-md-4"><img src="/upload/images/${response.data[variable].gambar}" style="width:30%;"><h4>${response.data[variable].nama}</h4><span class="badge badge-primary">${response.data[variable].hasil}</span></div>`
+                  $('#select_wisata').append(elm)
+                }
                 
                 for (let index = 0; index < response.data[variable].perhitungan.length; index++) {
                   const element = response.data[variable].perhitungan[index];
