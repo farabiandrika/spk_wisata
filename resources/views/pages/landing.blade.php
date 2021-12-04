@@ -83,10 +83,11 @@
     <div class="carousel-inner">
       @foreach ($wisatas as $key => $wisata)
       <div class="carousel-item {{ $key === 0 ? 'active' : '' }}">
-        <svg class="bd-placeholder-img" width="100%" height="50%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false">
+        <img src="{{ asset('upload/images/'.$wisata->gambar) }}" alt="" style="width: 1500px; height: 600px;">
+        {{-- <svg class="bd-placeholder-img" width="100%" height="50%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false">
           <rect x="0" y="0" width="100%" height="100%"/>
           <image xlink:href="{{ asset('upload/images/'.$wisata->gambar) }}" x="0" y="0" height="100%" width="100%"/>
-        </svg>
+        </svg> --}}
         <div class="container">
           <div class="carousel-caption">
             <h1>{{ $wisata->nama }}</h1>
@@ -129,6 +130,11 @@
           <br>
           <br>
           Sebagian wilayah Gunung Sitoli adalah perbukitan. Bagi Anda yang belum pernah mengunjungi kota ini, Gunung Sitoli adalah tempat yang sangat cocok untuk dijadikan destinasi liburan Anda. Di kota ini Anda akan dimanjakan dengan keindahan alamnya yang beragam. Selain itu, kota ini juga terdapat beberapa tempat bersejarah dan warisan-warisan budaya yang wajib untuk disambangi.</p>
+          <br>
+          <br>
+          <span>WA : 082160304436</span>
+          <br>
+          <span>email : ardiliusb@gmail.com</span>
       </div>
       <div class="col-md-5">
         <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#eee"/><image xlink:href="{{ asset('images/gunung-sitoli.jpeg') }}" x="0" y="0" height="100%" width="100%"/></svg>

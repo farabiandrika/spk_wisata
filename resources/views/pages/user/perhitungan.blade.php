@@ -134,7 +134,7 @@
                 temp_dataSet.push(response.data[variable].nama);
 
                 if (variable < 3) {
-                  let elm = `<div class="col-md-4"><img src="/upload/images/${response.data[variable].gambar}" style="width:30%;"><h4>${response.data[variable].nama}</h4><span class="badge badge-primary">${response.data[variable].hasil}</span></div>`
+                  let elm = `<div class="col-md-4"><img src="/upload/images/${response.data[variable].gambar}" style="width:30%;"><h4>${response.data[variable].nama}</h4><span class="badge badge-primary">${+variable + 1}</span></div>`
                   $('#select_wisata').append(elm)
                 }
                 
